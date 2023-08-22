@@ -14,6 +14,8 @@ jobs:
     outputs:
       toml_version: ${{ steps.lookupVersion.outputs.result }}
     steps:
+      - uses: actions/checkout@v3
+
       - name: Get version from Cargo.toml
         id: lookupVersion
         uses: mikefarah/yq@master
