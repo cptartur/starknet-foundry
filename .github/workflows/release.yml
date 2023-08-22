@@ -18,7 +18,7 @@ jobs:
         id: lookupVersion
         uses: mikefarah/yq@master
         with:
-          cmd: yq -oy '.workspace.package.version' 'Cargo.toml'
+          cmd: yq -oy '"v" + .workspace.package.version' 'Cargo.toml'
 
       - name: Version check
         if: steps.lookupVersion.outputs.result != github.ref_name
