@@ -22,6 +22,13 @@ jobs:
         with:
           cmd: yq -oy '.workspace.package.version' 'Cargo.toml'
 
+      - name: Version check
+        if: steps.lookupVersion.outputs.result != github.ref
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Version in Cargo.toml does not match the tag')
+
   build-binaries:
     name: Build ${{ matrix.target }}
     needs: verify-version
