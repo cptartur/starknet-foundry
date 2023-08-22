@@ -28,8 +28,9 @@ jobs:
           VER: ${{ steps.lookupVersion.outputs.result }}
         with:
           script: |
-            console.log(${REF})
-            console.log(${VER})
+            const { REF, VER } = process.env
+            console.log(REF)
+            console.log(VER)
             core.setFailed('Version in Cargo.toml does not match the tag')
 
   build-binaries:
