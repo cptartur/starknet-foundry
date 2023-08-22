@@ -21,10 +21,10 @@ jobs:
           cmd: yq -oy '.workspace.package.version' 'Cargo.toml'
 
       - name: Version check
-        if: steps.lookupVersion.outputs.result != github.ref
+        if: steps.lookupVersion.outputs.result != github.ref_name
         uses: actions/github-script@v3
         env:
-          REF: ${{ github.ref }}
+          REF: ${{ github.ref_name }}
           VER: ${{ steps.lookupVersion.outputs.result }}
         with:
           script: |
