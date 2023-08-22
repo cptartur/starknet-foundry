@@ -52,7 +52,14 @@ jobs:
         with:
           submodules: true
 
+      - name: Get version from Cargo.toml
+        id: lookupVersion
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -oy '.workspace.package.version' 'Cargo.toml'
+
       - uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
+        if: github.ref == steps.lookupVersion.outputs.result
         with:
           toolchain: stable
           target: ${{ matrix.target }}
