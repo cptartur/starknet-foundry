@@ -25,6 +25,7 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
+            console.log(github.ref)
             core.setFailed('Version in Cargo.toml does not match the tag')
 
   build-binaries:
