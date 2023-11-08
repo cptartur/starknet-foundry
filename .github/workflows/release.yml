@@ -99,43 +99,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
-        with:
-          toolchain: stable
-          target: ${{ matrix.target }}
-
-      - uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
-        with:
-          workspaces: starknet-foundry
-
-      - name: Install cross
-        if: matrix.cross
-        uses: taiki-e/install-action@cross
-
-      - name: Enable cross-compilation
-        if: matrix.cross
-        shell: bash
-        run: |
-          echo "CARGO=cross" >> $GITHUB_ENV
-
-      - name: Build
-        run: ${{ env.CARGO }} build --release --locked --target ${{ matrix.target }}
-
-      - name: Package
-        shell: bash
-        run: |
-          set -euxo pipefail
-          PKG_FULL_NAME="starknet-foundry-${{ needs.verify-version.outputs.version }}-${{ matrix.target }}"
-          echo "PKG_FULL_NAME=$PKG_FULL_NAME" >> $GITHUB_ENV
-
-          chmod +x ./scripts/package.sh
-          ./scripts/package.sh "${{ matrix.target }}" "$PKG_FULL_NAME"
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-${{ matrix.target }}
-          path: ${{ env.PKG_FULL_NAME }}.*
+#      - uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+#        with:
+#          toolchain: stable
+#          target: ${{ matrix.target }}
+#
+#      - uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
+#        with:
+#          workspaces: starknet-foundry
+#
+#      - name: Install cross
+#        if: matrix.cross
+#        uses: taiki-e/install-action@cross
+#
+#      - name: Enable cross-compilation
+#        if: matrix.cross
+#        shell: bash
+#        run: |
+#          echo "CARGO=cross" >> $GITHUB_ENV
+#
+#      - name: Build
+#        run: ${{ env.CARGO }} build --release --locked --target ${{ matrix.target }}
+#
+#      - name: Package
+#        shell: bash
+#        run: |
+#          set -euxo pipefail
+#          PKG_FULL_NAME="starknet-foundry-${{ needs.verify-version.outputs.version }}-${{ matrix.target }}"
+#          echo "PKG_FULL_NAME=$PKG_FULL_NAME" >> $GITHUB_ENV
+#
+#          chmod +x ./scripts/package.sh
+#          ./scripts/package.sh "${{ matrix.target }}" "$PKG_FULL_NAME"
+#
+#      - name: Upload artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: build-${{ matrix.target }}
+#          path: ${{ env.PKG_FULL_NAME }}.*
 
   create-release:
     name: Create release
@@ -144,15 +144,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: artifacts-dl
-
-      - name: Unpack artifacts to staging directory
-        run: |
-          mkdir -p artifacts
-          mv artifacts-dl/build-*/starknet-foundry-* artifacts/
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          path: artifacts-dl
+#
+#      - name: Unpack artifacts to staging directory
+#        run: |
+#          mkdir -p artifacts
+#          mv artifacts-dl/build-*/starknet-foundry-* artifacts/
 
       - name: Create GitHub release
         id: create-release
@@ -164,9 +164,18 @@ jobs:
           title: $version
           ref: refs/tags/${{ needs.verify-version.outputs.version }}
 
-      - name: Upload artifacts to the release
-        working-directory: artifacts
-        run: gh release upload "$TAG" *
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.create-release.outputs.computed-prefix }}${{ steps.create-release.outputs.version }}
+#      - name: Upload artifacts to the release
+#        working-directory: artifacts
+#        run: gh release upload "$TAG" *
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          TAG: ${{ steps.create-release.outputs.computed-prefix }}${{ steps.create-release.outputs.version }}
+
+  deploy-docs:
+    name: Deploy documentation
+    needs: create-release
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/docs.yml
