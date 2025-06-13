@@ -36,19 +36,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
-            # Use cross to link oldest GLIBC possible.
-            cross: true
-            lib-name-prefix: "lib"
-            ext: "so"
-
-          - target: aarch64-unknown-linux-gnu
-            os: ubuntu-latest
-            cross: true
-            lib-name-prefix: "lib"
-            ext: "so"
-
           - target: x86_64-apple-darwin
             os: macos-latest
             lib-name-prefix: "lib"
@@ -58,11 +45,6 @@ jobs:
             os: macos-latest
             lib-name-prefix: "lib"
             ext: "dylib"
-
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
-            lib-name-prefix: ""
-            ext: "dll"
 
           # The scarb builds for following platforms are experimental and not officially supported by starknet-foundry.
           # https://docs.swmansion.com/scarb/download.html#platform-support
